@@ -13,6 +13,6 @@ RUN curl https://sdk.cloud.google.com > install.sh && \
 RUN wget https://go.dev/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz && \
   rm -rf /usr/local/go && tar -C /usr/local -xzf go${GOLANG_VERSION}.linux-amd64.tar.gz
 
-RUN gcloud components install cloud-datastore-emulator app-engine-go app-engine-python -q
+RUN gcloud components install cloud-datastore-emulator app-engine-go app-engine-python beta -q
 
 VOLUME ["/root/.config"]
