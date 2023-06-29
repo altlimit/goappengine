@@ -7,7 +7,7 @@ ENV GOPATH=/root/go \
 
 ARG GOLANG_VERSION=1.20.5
 
-RUN apt update -yq && apt upgrade -yq && apt install curl python python3 wget -yq
+RUN apt update -yq && apt upgrade -yq && apt install curl python python3 wget default-jre -yq
 RUN curl https://sdk.cloud.google.com > install.sh && \
   bash install.sh --disable-prompts
 RUN wget https://go.dev/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz && \
