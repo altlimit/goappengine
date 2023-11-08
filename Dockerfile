@@ -16,5 +16,5 @@ RUN wget https://go.dev/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz && \
     rm -rf /usr/local/go && tar -C /usr/local -xzf go${GOLANG_VERSION}.linux-amd64.tar.gz
 
 RUN gcloud components install cloud-datastore-emulator app-engine-go app-engine-python beta -q
-
+RUN sed -i "s/'go115',/'go115','go116','go117','go118','go119','go120',/g" /root/google-cloud-sdk/platform/google_appengine/google/appengine/tools/devappserver2/http_runtime.py
 VOLUME ["/root/.config"]
