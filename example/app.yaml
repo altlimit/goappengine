@@ -1,0 +1,28 @@
+runtime: go125
+app_engine_apis: true
+
+instance_class: F1
+automatic_scaling:
+  max_instances: 10
+  min_instances: 0
+
+default_expiration: "30d"
+
+handlers:
+  - url: /(robots\.txt|favicon\.ico|manifest\.json|browserconfig\.xml|sitemap\.xml)
+    static_files: dist/\1
+    upload: dist/(robots\.txt|favicon\.ico|manifest\.json|browserconfig\.xml|sitemap\.xml)
+    expiration: "1d"
+    http_headers:
+      Access-Control-Allow-Origin: "*"
+
+  - url: /(assets)/(.*)
+    static_files: dist/\1/\2
+    upload: dist/(assets)/.*
+    http_headers:
+      Access-Control-Allow-Origin: "*"
+
+  - url: /.*
+    secure: always
+    redirect_http_response_code: 301
+    script: auto

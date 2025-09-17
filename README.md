@@ -7,7 +7,6 @@ Using dev_appserver.py for development with 2nd gen appengine using latest golan
 Use docker-compose.yaml to run your appengine project within appengine context.
 
 ```yaml
-version: "3"
 services:
   backend:
     image: "ghcr.io/altlimit/goappengine:latest"
@@ -25,16 +24,14 @@ services:
         "--storage_path=/data",
         "--runtime_python_path=/usr/bin/python3",
         "--application=app-test",
-        "--support_datastore_emulator=true",
         "--datastore_consistency_policy=consistent",
         "--require_indexes=true",
-        "app.yaml"
+        "/app/app.yaml"
       ]
     ports:
       - "8050:8050"
-    working_dir: /backend
     volumes:
-      - ./backend:/backend
+      - .:/app
       - ./tmp:/data
     environment:
       GOOGLE_CLOUD_PROJECT: 'app-test'
@@ -52,7 +49,7 @@ services:
 Here is an app.yaml example to keep using the appengine bundled services and couple of helper handles for asset files.
 
 ```yaml
-runtime: go120
+runtime: go125
 app_engine_apis: true
 
 instance_class: F1
