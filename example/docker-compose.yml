@@ -1,32 +1,59 @@
 services:
+  datastore:
+    build:
+      context: ../
+    volumes:
+      - ./tmp:/opt/datastore/data
+    ports:
+      - "8081:8081"
+    command:
+      [
+        "gcloud",
+        "--quiet",
+        "beta",
+        "emulators",
+        "datastore",
+        "start",
+        "--consistency=1",
+        "--host-port=0.0.0.0:8081",
+        "--data-dir=/opt/datastore/data"
+      ]
+    environment:
+      CLOUDSDK_CORE_PROJECT: app-test
+  dsadmin:
+    image: "ghcr.io/remko/dsadmin:latest"
+    depends_on:
+      - datastore
+    ports:
+      - "8082:8080"
+    environment:
+      DATASTORE_PROJECT_ID: app-test
+      DATASTORE_EMULATOR_HOST: "datastore:8081"
   backend:
     build:
       context: ../
     command:
       [
-        "python3",
         "/root/google-cloud-sdk/bin/dev_appserver.py",
         "--enable_host_checking=false",
         "--enable_watching_go_path=true",
-        "--default_gcs_bucket_name=default",
         "--log_level=debug",
         "--admin_host=0.0.0.0",
         "--host=0.0.0.0",
-        "--port=8881",
+        "--port=8080",
         "--storage_path=/data",
-        "--runtime_python_path=/usr/bin/python3",
         "--application=app-test",
-        "--datastore_consistency_policy=consistent",
-        "--require_indexes=true",
         "/app/app.yaml"
       ]
-    ports:
-      - "8881:8881"
-    volumes:
-      - .:/app
     environment:
       GOOGLE_CLOUD_PROJECT: 'app-test'
-      APPLICATION_ID: "dev~app-test"
+      DATASTORE_EMULATOR_HOST: "datastore:8081"
+    volumes:
+      - .:/app
+    depends_on:
+      - datastore
+    ports:
+      - "8080:8080"
   admin:
     image: "caddy:2-alpine"
     ports:
